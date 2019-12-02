@@ -10,17 +10,16 @@ server.get('/', (req, res) => {
 // | POST   | /api/users     | Creates a user using the information sent inside the `request body`.  
 server.post('/api/users', (req, res) => {
     const userData = req.body;
+    if (!userData.name || !userData.bio) {
+        res
+            .status(400)
+            .json({errorMessage: 'Please provide name and bio for the user.' })
+    } else {
         db.insert(userData)
             .then(user => {
-                if (user.name && user.bio) {
                     res
                         .status(201)
                         .json(user);
-                } else {
-                    res
-                        .status(400)
-                        .json({errorMessage: 'Please provide name and bio for the user.' })
-                }
             })
             .catch(error => {
                 console.log('error creating user from information requested inside req body', error);
@@ -28,6 +27,7 @@ server.post('/api/users', (req, res) => {
                     .status(500)
                     .json({error: 'There was an error while saving the user to the database'})
         })
+    }
 })
 // | GET    | /api/users     | Returns an array of all the user objects contained in the database. 
 server.get('/api/users', (req, res) => {
