@@ -92,28 +92,32 @@ server.delete('/api/users/:id', (req, res) => {
 server.put('/api/users/:id', (req, res) => {
     const id = req.params.id;
     const updates = req.body;
-    db.update(id, updates)
-        .then(update => {
-            if (!update.id) {
+    if (!id) {
+        res
+            .status(404)
+            .json({error: 'The user with the specified ID does not exist.'})
+    } else if (!updates.name || !updates.bio) {
+        res
+            .status(400)
+            .json({error: 'Please provide name and bio for the user.'})
+    } else {
+        db.update(id, updates)
+            .then(update => {
+                else if (!update.name || !update.bio) {
+                    
+                } else {
+                    res
+                        .status(202)
+                        .json(update)
+                }
+            })
+            .catch(error => {
+                console.log('error updating user by id', error);
                 res
-                    .status(404)
-                    .json({error: 'The user with the specified ID does not exist.'})
-            } else if (!update.name || !update.bio) {
-                res
-                    .status(400)
-                    .json({error: 'Please provide name and bio for the user.'})
-            } else {
-                res
-                    .status(202)
-                    .json(update)
-            }
-        })
-        .catch(error => {
-            console.log('error updating user by id', error);
-            res
-                .status(500)
-                .json({error: 'The user information could not be modified'})
-        })
+                    .status(500)
+                    .json({error: 'The user information could not be modified'})
+            })
+    }
 })
 const port = 5000;
 server.listen(port, () => console.log(`\n *** API running on port ${port} *** \n`))
