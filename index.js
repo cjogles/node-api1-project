@@ -103,13 +103,9 @@ server.put('/api/users/:id', (req, res) => {
     } else {
         db.update(id, updates)
             .then(update => {
-                else if (!update.name || !update.bio) {
-                    
-                } else {
-                    res
-                        .status(202)
-                        .json(update)
-                }
+                res
+                    .status(202)
+                    .json(update)
             })
             .catch(error => {
                 console.log('error updating user by id', error);
