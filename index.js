@@ -41,7 +41,7 @@ server.get('/api/users', (req, res) => {
             console.log('error retrieving all users in data base', error);
             res
                 .status(500)
-                .json({errorMessage: 'Error getting all users from data base'})
+                .json({error: 'The users information could not be retrieved.'})
         })
 })
 // | GET    | /api/users/:id | Returns the user object with the specified `id`.          
@@ -49,15 +49,21 @@ server.get('/api/users/:id', (req, res) => {
     const id = req.params.id;
     db.findById(id)
         .then(user => {
-            res
-                .status(200)
-                .json(user);
+            if (user.id) {
+                res
+                    .status(200)
+                    .json(user)
+            } else {
+                res
+                    .status(404)
+                    .json({message: 'The user with the specified ID does not exist.'})
+            }
         })
         .catch(error => {
             console.log('error retrieving user by id', error);
             res
                 .status(500)
-                .json({errorMessage: 'Error getting user by id'})
+                .json({error: 'The user information could not be retrieved'})
         })
 })
 // | DELETE | /api/users/:id | Removes the user with the specified `id` and returns the deleted user.    
