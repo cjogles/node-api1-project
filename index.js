@@ -77,8 +77,8 @@ server.delete('/api/users/:id', (req, res) => {
                     .json({message: `user ${id} has been removed successfully`})
             } else {
                 res
-                    .status(500)
-                    .json({errorMessage: `user ${id} not deleted :(`})
+                    .status(404)
+                    .json({error: 'The user with the specified ID does not exist.'})
             }
         })
         .catch(error => {
